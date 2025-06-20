@@ -1,0 +1,33 @@
+# src/test_agent/config/tasks.yaml
+
+url_analysis_task:
+  description: >
+    Analyze the URL: {url} for security threats.
+    Provide a confidence score between 0 and 1 based on URL characteristics.
+    Consider factors like domain reputation, file extensions, protocol security, etc.
+  expected_output: >
+    A dictionary with the following structure:
+    {
+      "url": "{url}",
+      "confidence_score": <float between 0 and 1>
+    }
+    
+    Where confidence_score represents the threat level:
+    - 0.0-0.5: Low threat (safe)
+    - 0.5-0.8: Medium threat (suspicious) 
+    - 0.8-1.0: High threat (dangerous)
+  agent: url_analyzer_agent
+
+soc_communication_task:
+  description: >
+    Take the URL analysis results and use only the 'assess_severity' MCP tool to get SOC admin recommendations.
+    Call assess_severity with the url and confidence_score from the analysis.
+    The tool will return an action recommendation (allow/review/block).
+  expected_output: >
+    A dictionary with the following structure:
+    {
+      "url": "{url}",
+      "confidence_score": <float between 0 and 1>
+      "result": Recommended action ("allow"/"review"/"block")
+    }
+  agent: soc_communication_agent
